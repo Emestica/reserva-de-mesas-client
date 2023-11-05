@@ -3,8 +3,14 @@ import HomeView from '../views/HomeView.vue'
 import RolesView from '../views/catalogos/RolesView.vue'
 import PersonasView from '../views/catalogos/PersonasView.vue'
 import UsuariosView from '../views/catalogos/UsuariosView.vue'
+import Prueba from '../views/pruebas/PruebaView.vue'
 
 const routes = [
+  {
+    path: '/prueba',
+    name: 'prueba',
+    component: Prueba
+  },
   {
     path: '/',
     name: 'home',
