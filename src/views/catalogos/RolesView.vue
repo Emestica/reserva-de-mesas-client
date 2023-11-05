@@ -8,21 +8,36 @@
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="rol"
-                                label="Nombre Rol"
+                                label="Rol"
+                                color="indigo"
+                                placeholder="Ingrese un Rol"
                                 required
                             >
                             </v-text-field>
                         </v-col>
 
                         <v-col cols="12" md="6">
+                            <v-select
+                                :items="estado"
+                                colo="indigo"
+                                clearable
+                                label="Seleccione un Estado"
+                            ></v-select>
+                        </v-col>
+
+                    </v-row>
+
+                    <v-row>
+                        <v-col cols="12" md="12">
                             <v-text-field
                                 v-model="descripcion"
                                 label="Descripcion"
                                 required
+                                color="indigo"
+                                placeholder="Ingrese una descripci&oacute;n"
                             >
                             </v-text-field>
                         </v-col>
-
                     </v-row>
                     <v-divider class="mb-2"></v-divider>
                     <v-row>
@@ -49,7 +64,7 @@
                                     <th>Rol</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Estado</th>
-                                    <th></th>
+                                    <th>Opciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,7 +107,9 @@ export default {
             rol: '',
             descripcion: '',
             usuario_creacion: 'root',
-            listado: []
+            listado: [],
+            //modo de prueba
+            estado: ['Activo', 'Inactivo', 'Eliminado']
         }
     },
     methods: {
