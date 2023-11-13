@@ -146,6 +146,7 @@
                                     <th>Edad</th>
                                     <th>Tipo de Usuario</th>
                                     <th>Estado</th>
+                                    <th></th>
                                     <th>Opciones</th>
                                     <th></th>
                                 </tr>

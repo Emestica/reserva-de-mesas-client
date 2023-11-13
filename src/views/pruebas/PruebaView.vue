@@ -14,7 +14,7 @@ import moment from 'moment';
 export default {
     data() {
         return {
-            fechaInput: '',
+            fechaInput: new Date()
         }
     },
     methods:{

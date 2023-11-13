@@ -84,9 +84,9 @@
 
 <v-app-bar color="blue">
 <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-<template v-slot:append>
+<!-- <template v-slot:append>
   <v-btn icon="mdi-dots-vertical"></v-btn>
-</template>
+</template> -->
 </v-app-bar>
 </template>
 
