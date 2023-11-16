@@ -146,12 +146,38 @@
                                     <th>Edad</th>
                                     <th>Tipo de Usuario</th>
                                     <th>Estado</th>
+                                    <th></th>
                                     <th>Opciones</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                <tr v-for="item in listaPersona" :key="item.id_persona">
+                                    <td>{{ item.id_persona }}</td>
+                                    <td>{{ item.nombres }}</td>
+                                    <td>{{ item.apellidos }}</td>
+                                    <td>{{ item.correo_electronico }}</td>
+                                    <td>{{ item.telefono }}</td>
+                                    <td>{{ item.celular }}</td>
+                                    <td>{{ item.direccion }}</td>
+                                    <td>{{ item.fecha_nacimiento }}</td>                                    
+                                    <td>{{ item.edad }}</td>
+                                    <td>Cliente</td>
+                                    <td>
+                                        <div v-if="item.estado === 'A'">Activo</div>
+                                        <div v-if="item.estado === 'I'">Inactivo</div>
+                                        <div v-if="item.estado === 'E'">Eliminado</div>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                    </td>
+                                </tr>
                             </tbody>
                         </v-table>
                     </v-col>
@@ -163,7 +189,7 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 //import { VDatePicker } from 'vuetify/lib/labs/components.mjs';
 
 export default {
@@ -182,20 +208,20 @@ export default {
             estado: ['Activo', 'Inactivo', 'Eliminado']
         }
     },
-    // methods: {
-    //     obtenerRoles(){
-    //         axios.get('http://localhost:8000/api/obtener-roles')
-    //         .catch(error => {
-    //             console.log(error)
-    //         })
-    //         .then(response => {
-    //             this.listaPersona = response.data.data;
-    //         });
-    //     }
-    // },
-    // created() {
-    //     this.obtenerRoles();
-    // }
+     methods: {
+         obtenerPersonas(){
+             axios.get('http://localhost:8000/api/get-personas')
+             .catch(error => {
+                 console.log(error)
+             })
+             .then(response => {
+                 this.listaPersona = response.data.data;
+             });
+         }
+     },
+     created() {
+         this.obtenerPersonas();
+     }
 }
 </script>
 

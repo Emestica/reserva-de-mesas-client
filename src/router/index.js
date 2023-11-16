@@ -8,6 +8,11 @@ import HomeView from '../views/HomeView.vue'
 import RolesView from '../views/catalogos/RolesView.vue'
 import PersonasView from '../views/catalogos/PersonasView.vue'
 import UsuariosView from '../views/catalogos/UsuariosView.vue'
+import ClasificacionView from '../views/catalogos/ClasificacionView.vue'
+import MenuView from '../views/catalogos/MenuView.vue'
+import MesasView from '../views/catalogos/MesasView.vue'
+import RestauranteView from '../views/catalogos/RestauranteView.vue'
+import ReservacionView from '../views/catalogos/ReservacionView.vue'
 import Prueba from '../views/pruebas/PruebaView.vue'
 
 const routes = [
@@ -55,6 +60,31 @@ const routes = [
     path: '/usuarios',
     name: 'usuarios',
     component: UsuariosView
+  },
+  {
+    path: '/clasificacion',
+    name: 'clasificacion',
+    component: ClasificacionView
+  },
+  {
+    path: '/menu',
+    name: 'Menu',
+    component: MenuView
+  },
+  {
+    path: '/mesas',
+    name: 'Mesas',
+    component: MesasView
+  },
+  {
+    path: '/restaurante',
+    name: 'Restaurante',
+    component: RestauranteView
+  },
+  {
+    path: '/reservacion',
+    name: 'Reservacion',
+    component: ReservacionView
   },
   {
     path: '/about',
