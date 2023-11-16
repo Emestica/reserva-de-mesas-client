@@ -4,17 +4,7 @@
         <v-card>
             <v-container>
                 <v-form v-model="validar">
-                    <v-row>
-                        <v-col cols="12" md="6">
-                            <v-select
-                                :items="departamento"
-                                density="compact"
-                                color="indigo"
-                                label="Seleccione un Departamento"
-                                clearable
-                            ></v-select>
-                        </v-col>
-
+                    <v-row>                       
                         <v-col cols="12" md="6">
                             <v-select
                                 :items="municipio"
@@ -24,8 +14,6 @@
                                 clearable
                             ></v-select>
                         </v-col>
-                    </v-row>
-                    <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="name_legal"
@@ -34,16 +22,8 @@
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="12" md="6">
-                            <v-text-field
-                                v-model="name"
-                                label="Nombre"
-                                placeholder="Ingrese el Nombre del Restaurante"
-                                color="indigo"
-                            ></v-text-field>
-                        </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row>                        
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="descripcion"
@@ -61,7 +41,7 @@
                             ></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row>                        
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="telf"
@@ -79,7 +59,7 @@
                             ></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row>                   
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="web"
@@ -111,13 +91,13 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Departamento</th>
                                     <th>Municipio</th>
                                     <th>Nombre Legal</th>
-                                    <th>Nombre de Restaurante</th>
+                                    <th>Restaurante</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Direcci&oacute;n</th>
                                     <th>Tel&eacute;fono</th>
+                                    <th>Celular</th>
                                     <th>Correo</th>
                                     <th>P&aacute;gina Web</th>
                                     <th>Estado</th>
@@ -126,7 +106,34 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr v-for="item in listaRestaurante" :key="item.id_restaurante">
+                                    <td>{{ item.id_restaurante }}</td>
+                                    <td>{{ item.municipio }}</td>
+                                    <td>{{ item.nombre_legal }}</td>
+                                    <td>{{ item.restaurante }}</td>
+                                    <td>{{ item.descripcion }}</td>
+                                    <td>{{ item.direccion }}</td>
+                                    <td>{{ item.telefono }}</td>
+                                    <td>{{ item.celular }}</td>
+                                    <td>{{ item.correo }}</td>
+                                    <td>{{ item.pagina_web }}</td>
+                                    <td>
+                                        <div v-if="item.estado === 'A'">Activo</div>
+                                        <div v-if="item.estado === 'I'">Inactivo</div>
+                                        <div v-if="item.estado === 'E'">Eliminado</div>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </v-table>
                     </v-col>
                 </v-row>
@@ -136,7 +143,7 @@
 </template>
 
 <script>
-//import axios from 'axios';
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -144,7 +151,39 @@ export default {
             items: ["Activo", "Inactivo", "Eliminado"],
             departamento: ["La Libertad", "San Salvador", "Ahuachapan"],
             municipio: ["Santa Tecla", "Apopa", "Ataco"],
+            header:{
+                params:{
+                    opcion: 4
+                }
+            },
+            listaMunicipio: [],
+            listaRestaurante: [],
         }
+    },
+    methods: {
+        obtenerMunicipio(){
+            axios.get('http://localhost:8000/api/get-municipios')
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                this.listaMunicipio = response.data.data;
+            })
+        },
+        obtenerRestaurante(){
+            axios.get('http://127.0.0.1:8000/api/get-restaurantes', this.header)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                this.listaRestaurante = response.data.data;
+
+            })
+        }
+    },
+    created() {
+        this.obtenerMunicipio();
+        this.obtenerRestaurante();
     },
 }
 </script>

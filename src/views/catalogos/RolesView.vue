@@ -64,7 +64,9 @@
                                     <th>Rol</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Estado</th>
+                                    <th></th>
                                     <th>Opciones</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,6 +87,15 @@
                                         <div v-else>
                                             {{ item.estado }}
                                         </div>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
+                                    </td>
+                                    <td>
+                                        <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -114,7 +125,7 @@ export default {
     },
     methods: {
         obtenerRoles(){
-            axios.get('http://localhost:8000/api/obtener-roles')
+            axios.get('http://127.0.0.1:8000/api/get-roles')
             .catch(error => {
                 console.log(error)
             })

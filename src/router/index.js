@@ -12,6 +12,7 @@ import ClasificacionView from '../views/catalogos/ClasificacionView.vue'
 import MenuView from '../views/catalogos/MenuView.vue'
 import MesasView from '../views/catalogos/MesasView.vue'
 import RestauranteView from '../views/catalogos/RestauranteView.vue'
+import ReservacionView from '../views/catalogos/ReservacionView.vue'
 import Prueba from '../views/pruebas/PruebaView.vue'
 
 const routes = [
@@ -79,6 +80,11 @@ const routes = [
     path: '/restaurante',
     name: 'Restaurante',
     component: RestauranteView
+  },
+  {
+    path: '/reservacion',
+    name: 'Reservacion',
+    component: ReservacionView
   },
   {
     path: '/about',
