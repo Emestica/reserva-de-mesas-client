@@ -3,11 +3,14 @@
         <h1>Formulario de Restaurantes</h1>
         <v-card>
             <v-container>
-                <v-form v-model="validar">
+                <v-form>
                     <v-row>                       
                         <v-col cols="12" md="6">
                             <v-select
-                                :items="municipio"
+                                v-model="restaurante.id_municipio"
+                                :items="listaMunicipio"
+                                item-value="id_municipio"
+                                item-title="departamento"
                                 density="compact"
                                 color="indigo"
                                 label="Seleccione un Municipio"
@@ -16,9 +19,9 @@
                         </v-col>
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="name_legal"
+                                v-model="restaurante.nombre_legal"
                                 label="Nombre Legal"
-                                placeholder="Ingrese un Nombre Legal"
+                                placeholder="Ingrese un nombre legal"
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
@@ -26,17 +29,17 @@
                     <v-row>                        
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="descripcion"
+                                v-model="restaurante.restaurante"
+                                label="Restaurante"
+                                placeholder="Ingrese nombre del Restaurante"
+                                color="indigo"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-text-field
+                                v-model="restaurante.descripcion"
                                 label="Descripci&oacute;n"
-                                placeholder="Ingrese una Descripci&oacute;n"
-                                color="indigo"
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" md="6">
-                            <v-text-field
-                                v-model="direccion"
-                                label="Direcci&oacute;n"
-                                placeholder="Ingrese una Direcci&oacute;n"
+                                placeholder="Ingrese una descripci&oacute;n"
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
@@ -44,17 +47,17 @@
                     <v-row>                        
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="telf"
-                                label="Tel&eacute;fono"
-                                placeholder="Ingrese un N&uacute;mero Telef&oacute;nico"
+                                v-model="restaurante.direccion"
+                                label="Direcci&oacute;n"
+                                placeholder="Ingrese una direcci&oacute;n"
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="email"
-                                label="Correo Electr&oacute;nico"
-                                placeholder="Ingrese un Correo Electr&oacute;nico"
+                                v-model="restaurante.telefono"
+                                label="Tel&eacute;fono Fijo"
+                                placeholder="Ingrese un n&uacute;mero telef&oacute;nico"
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
@@ -62,20 +65,36 @@
                     <v-row>                   
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="web"
-                                label="P&aacute;gina Web"
-                                placeholder="Ingrese su P&aacute;gina Web"
+                                v-model="restaurante.celular"
+                                label="Tel&eacute;fono Celular"
+                                placeholder="Ingrese un n&uacute;mero telef&oacute;nico"
                                 color="indigo"
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-select
-                                :items="items"
-                                density="compact"
+                            <v-text-field
+                                v-model="restaurante.correo"
+                                label="Correo Electr&oacute;nico"
+                                placeholder="Ingrese un correo electr&oacute;nico"
                                 color="indigo"
-                                label="Seleccione un Estado"
-                                clearable
-                            ></v-select>
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12" md="6">
+                            <v-text-field
+                                v-model="restaurante.pagina_web"
+                                label="P&aacute;gina Web"
+                                placeholder="Ingrese una p&aacute;gina web"
+                                color="indigo"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12" md="12">
+                            <div class="text-end">
+                                <v-btn type="button" class="mt-2 green" color="green-darken-3" @click="agregarRestaurante">Guardar</v-btn>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-form>
@@ -96,14 +115,12 @@
                                     <th>Restaurante</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Direcci&oacute;n</th>
-                                    <th>Tel&eacute;fono</th>
-                                    <th>Celular</th>
+                                    <th>Tel&eacute;fono Fijo</th>
+                                    <th>Tel&eacute;fono Celular</th>
                                     <th>Correo</th>
                                     <th>P&aacute;gina Web</th>
                                     <th>Estado</th>
-                                    <th></th>
                                     <th>Opciones</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,12 +141,7 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
@@ -146,11 +158,7 @@
 import axios from 'axios';
 export default {
     data() {
-        return {
-            validar: false,
-            items: ["Activo", "Inactivo", "Eliminado"],
-            departamento: ["La Libertad", "San Salvador", "Ahuachapan"],
-            municipio: ["Santa Tecla", "Apopa", "Ataco"],
+        return {            
             header:{
                 params:{
                     opcion: 4
@@ -158,6 +166,7 @@ export default {
             },
             listaMunicipio: [],
             listaRestaurante: [],
+            restaurante: {},
         }
     },
     methods: {
@@ -178,6 +187,18 @@ export default {
             .then(response => {
                 this.listaRestaurante = response.data.data;
 
+            })
+        },
+        agregarRestaurante(){
+            this.restaurante.usuario_creacion = 'root';
+            axios.post('http://127.0.0.1:8000/api/save-restaurante', this.restaurante)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerRestaurante()
+                this.restaurante = {}
             })
         }
     },

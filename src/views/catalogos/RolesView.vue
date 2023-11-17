@@ -7,7 +7,7 @@
 
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="rol"
+                                v-model="roles.rol"
                                 label="Rol"
                                 color="indigo"
                                 placeholder="Ingrese un Rol"
@@ -15,22 +15,9 @@
                             >
                             </v-text-field>
                         </v-col>
-
                         <v-col cols="12" md="6">
-                            <v-select
-                                :items="estado"
-                                colo="indigo"
-                                clearable
-                                label="Seleccione un Estado"
-                            ></v-select>
-                        </v-col>
-
-                    </v-row>
-
-                    <v-row>
-                        <v-col cols="12" md="12">
                             <v-text-field
-                                v-model="descripcion"
+                                v-model="roles.descripcion"
                                 label="Descripcion"
                                 required
                                 color="indigo"
@@ -43,7 +30,7 @@
                     <v-row>
                         <v-col cols="12" md="12">
                             <div class="text-end">
-                                <v-btn type="button" class="mt-2 green" color="green-darken-3">Guardar</v-btn>
+                                <v-btn type="button" class="mt-2 green" color="green-darken-3" @click="agregarRol">Guardar</v-btn>
                             </div>
                         </v-col>
                     </v-row>
@@ -64,9 +51,7 @@
                                     <th>Rol</th>
                                     <th>Descripci&oacute;n</th>
                                     <th>Estado</th>
-                                    <th></th>
                                     <th>Opciones</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,12 +74,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
@@ -115,12 +95,8 @@ export default {
     data(){
         return {
             validar: false,
-            rol: '',
-            descripcion: '',
-            usuario_creacion: 'root',
+            roles: {},
             listado: [],
-            //modo de prueba
-            estado: ['Activo', 'Inactivo', 'Eliminado']
         }
     },
     methods: {
@@ -132,6 +108,18 @@ export default {
             .then(response => {
                 this.listado = response.data.data;
             });
+        },
+        agregarRol(){
+            this.roles.usuario_creacion = 'root';
+            axios.post('http://127.0.0.1:8000/api/save-rol', this.roles)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerRoles()
+                this.roles = {}
+            })
         }
     },
     created() {
