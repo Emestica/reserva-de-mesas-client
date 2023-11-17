@@ -1,4 +1,74 @@
 <template>
+ <v-container fluid>
+  <v-card title="Bienvenid@ a" subtitle="Nuestro Sistema de reservas">
+  <v-img src="https://loredomuebles.com/wp-content/uploads/2017/11/MESAS-1080x675.jpg"></v-img>
+</v-card><br>
+<v-row>
+  <v-col> 
+<v-card>
+  <v-img src="https://www.loquequierasya.com/wp-content/uploads/2011/07/reservaciones-gestion-hotelera-1024x480.jpg"></v-img>
+ <v-card-text>¡Bienvenido a nuestro sistema de reservación de mesas para administradores!</v-card-text>
+ <v-card-text>Estamos encantados de que haya elegido nuestro sistema para gestionar su restaurante. Nuestro sistema está diseñado para ayudarle a administrar todas las reservas de su restaurante de forma eficiente y sencilla.</v-card-text>
+ <v-card-text></v-card-text>
+ <v-card-text></v-card-text>
+</v-card><br>
+</v-col>
+<v-col>
+ <v-card>
+  <v-img src="https://www.upmenu.com/wp-content/uploads/2022/08/Reservar-restaurante.jpg"></v-img>
+  <v-card-text>Beneficios de nuestro sistema:</v-card-text>
+  <v-card-text> Aumento de la eficiencia: Nuestro sistema automatiza muchas tareas que normalmente se realizan manualmente, lo que libera tiempo a los administradores para centrarse en otras tareas importantes.</v-card-text>
+  <v-card-text>Mejora de la experiencia del cliente: Nuestro sistema facilita a los clientes realizar reservas, lo que mejora su experiencia y aumenta la probabilidad de que vuelvan.</v-card-text>
+<v-card-text>Aumento de los ingresos: Nuestro sistema ayuda a los administradores a optimizar sus reservas y a aumentar la ocupación de sus restaurantes, lo que puede traducirse en un aumento de los ingresos.</v-card-text>
+ </v-card>
+
+ 
+</v-col>
+
+
+</v-row>
+<v-row>
+  <v-col>
+    <v-card title="Restaurantes">
+    <v-img src="../assets/Restaurante.png"></v-img>
+    <v-card-text>▪Agregar Restaurante </v-card-text>
+    <v-card-text>▪Agregar Clasificacion </v-card-text>
+    <v-card-text>▪Agregar Menu </v-card-text>
+    <v-card-text>▪Modificar Menu </v-card-text>
+    <v-card-text>▪Eliminar Menu </v-card-text>
+    <v-card-text>▪Agregar Mesas </v-card-text>
+    <v-card-text>▪Modificar Mesas </v-card-text>
+    <v-card-text>▪Eliminar Mesas </v-card-text>
+  </v-card>
+  </v-col>
+  <v-col>
+    <v-card title="Reservaciones" >
+    <v-img src="https://png.pngtree.com/png-vector/20220608/ourmid/pngtree-calendar-icon-on-white-background-png-image_4926329.png"></v-img>
+    <v-card-text>▪Visualizar Reservaciones </v-card-text>
+    <v-card-text>▪Modificar Reservaciones </v-card-text>
+    <v-card-text>▪Eliminar Reservaciones </v-card-text>
+  
+  
+  </v-card>
+  </v-col>
+  <v-col>
+
+    <v-card title="Usuarios">
+    <v-img src="https://cdn-icons-png.flaticon.com/512/72/72728.png"></v-img>
+    <v-card-text>▪Visualizar Usuarios </v-card-text>
+    <v-card-text>▪Agregar Roles </v-card-text>
+    <v-card-text>▪Agregar Usuarios </v-card-text>
+    <v-card-text>▪Modificar Usuarios </v-card-text>
+    <v-card-text>▪Eliminar Usuarios </v-card-text>
+  
+  </v-card>
+  </v-col>
+</v-row>
+</v-container>
+
+
+
+
   <v-navigation-drawer v-model="drawer" location="left" theme="dark" permanent width="360">
 
 <v-list-item prepend-icon="mdi mdi-account-circle" title="Jhony Gente Loca" subtitle="jhony.gente.loca@gmail.com"></v-list-item>
@@ -118,3 +188,9 @@ export default {
 };
 
 </script>
+
+<style>
+title{
+  text-align: center;
+}
+</style>
