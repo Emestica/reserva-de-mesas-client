@@ -7,12 +7,13 @@ import ForgotPassword from '../views/ForgotPasswordView.vue'
 import HomeView from '../views/HomeView.vue'
 import RolesView from '../views/catalogos/RolesView.vue'
 import PersonasView from '../views/catalogos/PersonasView.vue'
-import UsuariosView from '../views/catalogos/UsuariosView.vue'
 import ClasificacionView from '../views/catalogos/ClasificacionView.vue'
 import MenuView from '../views/catalogos/MenuView.vue'
+import TipoMenuView from '../views/catalogos/TipoMenuView.vue'
 import MesasView from '../views/catalogos/MesasView.vue'
 import RestauranteView from '../views/catalogos/RestauranteView.vue'
 import ReservacionView from '../views/catalogos/ReservacionView.vue'
+import MunicipioView from '../views/catalogos/MunicipioView.vue'
 import Prueba from '../views/pruebas/PruebaView.vue'
 
 const routes = [
@@ -57,9 +58,9 @@ const routes = [
     component: PersonasView
   },
   {
-    path: '/usuarios',
-    name: 'usuarios',
-    component: UsuariosView
+    path: '/municipios',
+    name: 'municipios',
+    component: MunicipioView
   },
   {
     path: '/clasificacion',
@@ -70,6 +71,11 @@ const routes = [
     path: '/menu',
     name: 'Menu',
     component: MenuView
+  },
+  {
+    path: '/tipo-menu',
+    name: 'TipoMenu',
+    component: TipoMenuView
   },
   {
     path: '/mesas',

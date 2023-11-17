@@ -3,12 +3,12 @@
         <h1>Formulario de Clientes</h1>
         <v-card>
             <v-container>
-                <v-form v-model="validar">
+                <v-form>
                     <v-row>
 
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="nombre"
+                                v-model="persona.nombres"
                                 label="Nombre"
                                 maxLength="25"
                                 color="indigo"
@@ -20,7 +20,7 @@
 
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="apellido"
+                                v-model="persona.apellidos"
                                 label="Apellidos"
                                 maxLength="25"                        
                                 color="indigo"                                
@@ -35,7 +35,7 @@
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="email"
+                                v-model="persona.correo_electronico"
                                 label="Correo Electr&oacute;nico"   
                                 color="indigo"                                
                                 placeholder="Ingrese el Correo"
@@ -46,7 +46,7 @@
 
                         <v-col cols="12" md="3">
                             <v-text-field
-                                v-model="telefono"
+                                v-model="persona.telefono"
                                 label="Tel&eacute;fono Fijo"
                                 maxLength="9"                                
                                 color="indigo"                                
@@ -57,7 +57,7 @@
 
                         <v-col cols="12" md="3">
                             <v-text-field
-                                v-model="celular"
+                                v-model="persona.celular"
                                 label="Tel&eacute;fono Celular"
                                 maxLength="9"                        
                                 color="indigo"                                
@@ -71,7 +71,7 @@
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
-                                v-model="direccion"
+                                v-model="persona.direccion"
                                 label="Direcci&oacute;n"
                                 color="indigo"
                                 placeholder="Ingrese una Direcci&oacute;n"
@@ -81,7 +81,10 @@
 
                         <v-col cols="12" md="6">
                             <v-select
-                                :items="items"
+                                v-model="persona.id_tipo_persona"
+                                :items="listaTipoPersona"
+                                item-value="id_tipo_persona"
+                                item-title="tipo_persona"
                                 density="compact"
                                 color="indigo"
                                 label="Seleccione un Tipo de Usuario"
@@ -97,21 +100,11 @@
 
                         <v-col cols="6" md="3">
                             <v-text-field
-                                v-model="edad"
+                                v-model="persona.edad"
                                 label="Edad"
                                 type="number"
                                 color="indigo"
                             ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="6" md="3">
-                            <v-select
-                                :items="estado"
-                                density="compact"
-                                color="indigo"
-                                label="Seleccione un Estado"
-                                clearable
-                            ></v-select>
                         </v-col>
                     </v-row>
                     <v-divider class="mb-2"></v-divider>
@@ -146,9 +139,7 @@
                                     <th>Edad</th>
                                     <th>Tipo de Usuario</th>
                                     <th>Estado</th>
-                                    <th></th>
                                     <th>Opciones</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -162,19 +153,14 @@
                                     <td>{{ item.direccion }}</td>
                                     <td>{{ item.fecha_nacimiento }}</td>                                    
                                     <td>{{ item.edad }}</td>
-                                    <td>Cliente</td>
+                                    <td>{{ item.tipo_persona }}</td>
                                     <td>
                                         <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-eye" color="indigo"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                    </td>
-                                    <td>
                                         <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
@@ -198,29 +184,53 @@ export default {
     },
     data(){
         return {
-            validar: false,
-            rol: '',
-            descripcion: '',
-            usuario_creacion: 'root',
             listaPersona: [],
-            //modo de prueba
-            items: ['Cliente', 'Gerente'],
-            estado: ['Activo', 'Inactivo', 'Eliminado']
+            listaTipoPersona: [],
+            header: {
+                params: {
+                    opcion: 0,
+                }
+            },
+            persona: {},
         }
     },
      methods: {
-         obtenerPersonas(){
-             axios.get('http://localhost:8000/api/get-personas')
-             .catch(error => {
-                 console.log(error)
-             })
-             .then(response => {
-                 this.listaPersona = response.data.data;
-             });
-         }
+        obtenerTipoPersonas(){
+            axios.get('http://127.0.0.1:8000/api/get-tipo-personas')
+            .catch(error => {
+                console.log(error)
+            })
+            .then(response => {
+                this.listaTipoPersona = response.data.data;
+                console.log(this.listaTipoPersona);
+            });
+        },
+        obtenerPersonas(){
+            axios.get('http://127.0.0.1:8000/api/get-personas', this.header)
+            .catch(error => {
+                console.log(error)
+            })
+            .then(response => {
+                this.listaPersona = response.data.data;
+                console.log(this.listaPersona);
+            });
+        },
+        agregarPersona(){
+            this.persona.usuario_creacion = 'root';
+            axios.post('http://127.0.0.1:8000/api/save-persona', this.persona)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerPersonas()
+                this.persona = {}
+            })
+        }
      },
      created() {
          this.obtenerPersonas();
+         this.obtenerTipoPersonas();
      }
 }
 </script>
