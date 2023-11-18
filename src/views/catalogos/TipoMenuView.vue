@@ -69,7 +69,7 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerTipoMenu"></v-btn>
                                         <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
@@ -79,6 +79,46 @@
                 </v-row>
             </v-container>
         </v-card>
+
+        <!--Editar-->
+        <v-dialog
+            v-model="dialog"
+            transition="dialog-top-transition"
+            width="500"
+        >
+            <v-card title="Editar" subtitle="Datos del tipo de men&uacute;">
+                <v-card-text>
+                    <v-text-field
+                        v-model="datos.tipo_menu"
+                        label="Tipo de men&uacute;"
+                        color="indigo"
+                        placeholder="Ingrese un tipo de men&uacute;"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.descripcion"
+                        label="Descripci&oacute;n"
+                        color="indigo"
+                        placeholder="Ingrese una descripci&oacute;n"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.icon"
+                    ></v-text-field>
+                    <v-select
+                        v-model="datos.estado"
+                        :items="estados"
+                        item-title="title"
+                        item-value="value"                    
+                        density="compact"
+                        label="Disponibilidad"
+                        color="indigo"
+                        clearable
+                    ></v-select>
+                </v-card-text>
+                
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -89,6 +129,25 @@ export default {
         return {
             listaTipoMenus: [],
             tipomenu: {},
+            datos: {},
+            dialog: false,
+            header: {
+                params: {
+                    opcion: 2,
+                    idtipomenu: 1,
+                }
+            },
+            estados: [
+                {
+                    title: 'Activo', value: 'A',
+                },
+                {
+                    title: 'Inactivo', value: 'I',
+                },
+                {
+                    title: 'Eliminado', value: 'E',
+                },
+            ]
         }
     },
     methods: {
@@ -101,6 +160,16 @@ export default {
                 this.listaTipoMenus = response.data.data;
             });
         },
+        obtenerTipoMenu(){
+            axios.get('http://127.0.0.1:8000/api/get-tipo-menu', this.header)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                this.datos = response.data.data;
+                this.dialog = true
+            });
+        },
         agregarTipoMenu(){
             this.tipomenu.usuario_creacion = 'root';
             axios.post('http://127.0.0.1:8000/api/save-tipo-menu', this.tipomenu)
@@ -111,6 +180,17 @@ export default {
                 console.log(response);
                 this.obtenerTipoMenus()
                 this.tipomenu = {}
+            })
+        },
+        editarTipoMenu(id){
+            axios.put(`http://127.0.0.1:8000/api/update-tipo-menu/${id}`, this.datos)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerTipoMenus()
+                this.dialog = false
             })
         }
     },
