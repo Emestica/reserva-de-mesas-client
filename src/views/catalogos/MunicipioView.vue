@@ -32,7 +32,7 @@
                     <v-col cols="12" md="12">
                         <div class="text-end">
                             <v-btn type="button" class="mt-2 green" color="green-darken-3"
-                                @click="agregarClasif">Guardar</v-btn>
+                                @click="agregarMunicipio">Guardar</v-btn>
                         </div>
                     </v-col>
                 </v-row>
@@ -56,7 +56,7 @@
                                 <tr v-for="item in listaMunicipios" :key="item.id_municipio">
                                     <td>{{ item.id_municipio }}</td>
                                     <td>{{ item.municipio }}</td>
-                                    <td>{{ item.departamento }}</td>
+                                    <td>{{ item.departamentos }}</td>
                                     <td>
                                         <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
@@ -89,33 +89,33 @@ export default {
     methods: {
         obtenerDepartamentos() {
             axios.get('http://127.0.0.1:8000/api/get-departamentos')
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(response => {
-                    this.listaDepartamentos = response.data.data;
-                })
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                this.listaDepartamentos = response.data.data;
+            })
         },
         obtenerMunicipios() {
             axios.get('http://127.0.0.1:8000/api/get-municipios')
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(response => {
-                    this.listaMunicipios = response.data.data;
-                })
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                this.listaMunicipios = response.data.data;
+            })
         },
         agregarMunicipio() {
             this.municipio.usuario_creacion = 'root'
             axios.post('http://127.0.0.1:8000/api/save-municipio', this.municipio)
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(response => {
-                    console.log(response);
-                    this.obtenerMunicipios()
-                    this.municipio = {}
-                })
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerMunicipios()
+                this.municipio = {}
+            })
         }
     },
     created() {

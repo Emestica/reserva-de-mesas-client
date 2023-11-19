@@ -52,6 +52,7 @@
                                 color="indigo"                                
                                 placeholder="Ingrese un teléfono Fijo"
                                 required
+                                counter
                             ></v-text-field>
                         </v-col>
 
@@ -63,6 +64,7 @@
                                 color="indigo"                                
                                 placeholder="Ingrese un teléfono Celular"
                                 required
+                                counter
                             ></v-text-field>
                         </v-col>
 
@@ -160,8 +162,8 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerPersona(item.id_persona, 1)"></v-btn>
+                                        <v-btn icon="mdi-delete" color="red" @click="obtenerPersona(item.id_persona, 2)"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -171,17 +173,117 @@
             </v-container>
         </v-card>
 
+        <!--Editar-->
+        <v-dialog
+            v-model="dialogOne"
+            transition="dialog-top-transition"
+            width="600"
+        >
+            <v-card title="Editar" subtitle="Datos de la persona">
+                <v-card-text>
+                    <v-text-field
+                        v-model="datos.nombres"
+                        label="Nombre"
+                        maxLength="25"
+                        color="indigo"
+                        placeholder="Ingrese los Nombres"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.apellidos"
+                        label="Apellidos"
+                        maxLength="25"                        
+                        color="indigo"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.correo_electronico"
+                        label="Correo Electr&oacute;nico"
+                        maxLength="200"   
+                        color="indigo"
+                        required                                
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.telefono"
+                        label="Tel&eacute;fono Fijo"
+                        maxLength="9"                                
+                        color="indigo"
+                        required
+                        counter
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.celular"
+                        label="Tel&eacute;fono Celular"
+                        maxLength="9"                        
+                        color="indigo"
+                        required
+                        counter
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.direccion"
+                        label="Direcci&oacute;n"
+                        color="indigo"
+                        required
+                    ></v-text-field>
+                    <v-select
+                        v-model="datos.id_tipo_persona"
+                        :items="listaTipoPersona"
+                        item-value="id_tipo_persona"
+                        item-title="tipo_persona"
+                        density="compact"
+                        color="indigo"
+                        label="Seleccione un Tipo de Usuario"
+                        clearable
+                        required
+                    ></v-select>
+                    <v-text-field
+                        v-model="datos.edad"
+                        label="Edad"
+                        type="number"
+                        color="indigo"
+                        required
+                    ></v-text-field>
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn
+                        color="amber-accent-4"
+                        @click="dialogOne = false"
+                    >Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="purple-darken-3"
+                        @click="editarPersona(datos.id_persona)"
+                    >Actualizar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!--Eliminar-->
+        <v-dialog
+            v-model="dialogTwo"
+            transition="dialog-top-transition"
+            width="400"
+        >
+            <v-card title="Eliminar">  
+                <br>
+                <v-card-text>
+                    Est&aacute; seguro de eliminar este registro?
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogTwo = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red-accent-4" @click="eliminarPersona">Eliminar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
 <script>
 import axios from 'axios';
-//import { VDatePicker } from 'vuetify/lib/labs/components.mjs';
-
 export default {
-    components:{
-        
-    },
     data(){
         return {
             listaPersona: [],
@@ -191,7 +293,22 @@ export default {
                     opcion: 0,
                 }
             },
+            estados: [
+                {
+                    title: 'Activo', value: 'A',
+                },
+                {
+                    title: 'Inactivo', value: 'I',
+                },
+                {
+                    title: 'Eliminado', value: 'E',
+                },
+            ],
             persona: {},
+            idEliminar: null,
+            datos: {},
+            dialogOne: false,
+            dialogTwo: false,
         }
     },
      methods: {
@@ -215,6 +332,28 @@ export default {
                 console.log(this.listaPersona);
             });
         },
+        obtenerPersona(id, action){
+            if (action == 1) {
+                let headerById = {
+                    params: {
+                        opcion: 2,
+                        idpersona: id
+                    }
+                }
+
+                axios.get('http://127.0.0.1:8000/api/get-personas', headerById)
+                .catch(error => {
+                    console.log(error);
+                })
+                .then(response => {
+                    this.datos = response.data.data;
+                    this.dialogOne = true;
+                });
+            } else {
+                this.dialogTwo = true;
+                this.idEliminar = id;
+            }
+        },
         agregarPersona(){
             this.persona.usuario_creacion = 'root';
             axios.post('http://127.0.0.1:8000/api/save-persona', this.persona)
@@ -225,6 +364,29 @@ export default {
                 console.log(response);
                 this.obtenerPersonas()
                 this.persona = {}
+            })
+        },
+        editarPersona(id){
+            this.datos.usuario_creacion = 'root';
+            axios.put(`http://127.0.0.1:8000/api/update-persona/${id}`, this.datos)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerPersonas()
+                this.dialogOne = false
+            })
+        },
+        eliminarPersona(){
+            axios.put(`http://127.0.0.1:8000/api/delete-persona/${this.idEliminar}`)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerPersonas()
+                this.dialogTwo = false;
             })
         }
      },

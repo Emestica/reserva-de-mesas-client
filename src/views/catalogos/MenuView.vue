@@ -156,6 +156,22 @@
                 </v-row>
             </v-container>
         </v-card>
+
+        <!--Editar-->
+        <v-dialog
+            v-model="dialogOne"
+            transition="dialog-top-transition"
+            width="600"
+        >
+            <v-card title="Editar" subtitle="Datos del men&uacute;">
+                <v-card-text>
+                    <v-select
+                        
+                    ></v-select>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+
     </v-container>
 </template>
 
@@ -164,7 +180,6 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            validar: false,
             header: {
                 params: {
                     opcion: 1,
@@ -177,11 +192,28 @@ export default {
             }, {
                 title: 'Inactivo', value: false,
             }],
+            estados: [
+                {
+                    title: 'Activo', value: 'A',
+                },
+                {
+                    title: 'Inactivo', value: 'I',
+                },
+                {
+                    title: 'Eliminado', value: 'E',
+                },
+            ],
             listaMenu: [],
             listaTipoMenu: [],
             listaRestaurante: [],
             listaClasif: [],
             menu: {},
+            idEliminar: null,
+            dialogOne: false,
+            dialogTwo: false,
+            datos: {},
+            alertaEstado: false,
+            mensaje: '',
         }
     },
     methods: {
@@ -204,7 +236,7 @@ export default {
                 console.log(response);
             })
         },
-        obtenerMenu(){
+        obtenerMenus(){
             axios.get('http://127.0.0.1:8000/api/get-menus', this.header)
             .catch(error => {
                 console.log(error);
@@ -212,6 +244,29 @@ export default {
             .then(response => {
                 this.listaMenu = response.data.data;
             })
+        },
+        obtenerMenu(id, action){
+            if (action == 1) {
+
+                let headerById = {
+                    params:{
+                        opcion: 2,
+                        idmenu: id
+                    }
+                }
+
+                axios.get('http://127.0.0.1:8000/api/get-menus', headerById)
+                .catch(error => {
+                    console.log(error);
+                })
+                .then(response => {
+                    this.datos = response.data.data;
+                    this.dialogOne = true;
+                });
+            } else {
+            this.dialogTwo = true;
+            this.idEliminar = id;
+            }
         },
         obtenerTipoMenu(){
             axios.get('http://127.0.0.1:8000/api/get-tipo-menu')
@@ -233,13 +288,36 @@ export default {
             })
             .then(response => {
                 console.log(response);
-                this.obtenerMenu()
+                this.obtenerMenus()
                 this.menu = {}
+            })
+        },
+        editarMenu(id){
+            this.datos.usuario_modificacion = 'root';
+            axios.put(`http://127.0.0.1:8000/api/update-menu/${id}`, this.datos)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerMenus()
+                this.dialogOne = false
+            })
+        },
+        eliminarMenu(){
+            axios.put(`http://127.0.0.1:8000/api/delete-menu/${this.idEliminar}`)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerMenus()
+                this.dialogTwo = false;
             })
         }
     },
     created() {
-        this.obtenerMenu();
+        this.obtenerMenus();
         this.obtenerClasif();
         this.obtenerRestaurante();
         this.obtenerTipoMenu();

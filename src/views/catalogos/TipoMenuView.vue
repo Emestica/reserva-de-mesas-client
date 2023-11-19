@@ -69,8 +69,8 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerTipoMenu"></v-btn>
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerTipoMenu(item.id_tipo_menu, 1)"></v-btn>
+                                        <v-btn icon="mdi-delete" color="red" @click="obtenerTipoMenu(item.id_tipo_menu, 2)"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -82,7 +82,7 @@
 
         <!--Editar-->
         <v-dialog
-            v-model="dialog"
+            v-model="dialogOne"
             transition="dialog-top-transition"
             width="500"
         >
@@ -116,7 +116,38 @@
                         clearable
                     ></v-select>
                 </v-card-text>
-                
+                <br>
+                <v-card-actions>
+                    <v-btn
+                        color="amber-accent-4"
+                        @click="dialogOne = false"
+                    >Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="purple-darken-3"
+                        @click="editarTipoMenu(datos.id_tipo_menu)"
+                    >Actualizar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!--Eliminar-->
+        <v-dialog
+            v-model="dialogTwo"
+            transition="dialog-top-transition"
+            width="400"
+        >
+            <v-card title="Eliminar">  
+                <br>
+                <v-card-text>
+                    Est&aacute; seguro de eliminar este registro?
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogTwo = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red-accent-4" @click="eliminarTipoMenu">Eliminar</v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-container>
@@ -127,10 +158,12 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            idEliminar: null,
             listaTipoMenus: [],
             tipomenu: {},
             datos: {},
-            dialog: false,
+            dialogOne: false,
+            dialogTwo: false,
             header: {
                 params: {
                     opcion: 2,
@@ -160,15 +193,28 @@ export default {
                 this.listaTipoMenus = response.data.data;
             });
         },
-        obtenerTipoMenu(){
-            axios.get('http://127.0.0.1:8000/api/get-tipo-menu', this.header)
-            .catch(error => {
-                console.log(error);
-            })
-            .then(response => {
-                this.datos = response.data.data;
-                this.dialog = true
-            });
+        obtenerTipoMenu(id, action){
+            if (action == 1) {
+
+                let headerById = {
+                    params:{
+                        opcion: 2,
+                        idtipomenu: id
+                    }
+                }
+
+                axios.get('http://127.0.0.1:8000/api/get-tipo-menu', headerById)
+                .catch(error => {
+                    console.log(error);
+                })
+                .then(response => {
+                    this.datos = response.data.data;
+                    this.dialogOne = true;
+                });
+            } else {
+                this.dialogTwo = true;
+                this.idEliminar = id;
+            }
         },
         agregarTipoMenu(){
             this.tipomenu.usuario_creacion = 'root';
@@ -183,6 +229,7 @@ export default {
             })
         },
         editarTipoMenu(id){
+            this.datos.usuario_modificacion = 'root';
             axios.put(`http://127.0.0.1:8000/api/update-tipo-menu/${id}`, this.datos)
             .catch(error => {
                 console.log(error);
@@ -190,7 +237,18 @@ export default {
             .then(response => {
                 console.log(response);
                 this.obtenerTipoMenus()
-                this.dialog = false
+                this.dialogOne = false
+            })
+        },
+        eliminarTipoMenu(){
+            axios.put(`http://127.0.0.1:8000/api/delete-tipo-menu/${this.idEliminar}`)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerTipoMenus()
+                this.dialogTwo = false;
             })
         }
     },
