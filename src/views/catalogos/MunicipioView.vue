@@ -223,7 +223,17 @@ export default {
         },
         editarMunicipio(id){
             this.datos.usuario_modificacion = 'root';
-            axios.put(`http://127.0.0.1:8000/api/update-municipio/${id}`, this.datos)
+            
+            let objeto = {
+                id_departamento: this.datos.id_departamento,
+                municipio: this.datos.municipio,
+                estado: this.datos.estado,
+                usuario_modificacion: this.datos.usuario_modificacion
+            }
+
+            console.log(id)
+            console.log(this.datos)
+            axios.put(`http://127.0.0.1:8000/api/update-municipio/${id}`, objeto)
             .catch(error => {
                 console.log(error);
             })
