@@ -177,6 +177,11 @@
             </v-container>
         </v-card>
 
+        <!--Alerta-->
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
+
         <!--Editar-->
         <v-dialog
             v-model="dialogOne"
@@ -252,6 +257,16 @@
                         color="indigo"
                         required
                     ></v-text-field>
+                    <v-select
+                        v-model="datos.estado"
+                        :items="estados"
+                        item-value="value"
+                        item-title="title"
+                        density="compact"
+                        color="indigo"
+                        label="Seleccione un estado"
+                        clearable
+                    ></v-select>
                 </v-card-text>
                 <br>
                 <v-card-actions>
@@ -299,11 +314,6 @@ export default {
         return {
             listaPersona: [],
             listaTipoPersona: [],
-            header: {
-                params: {
-                    opcion: 0,
-                }
-            },
             estados: [
                 {
                     title: 'Activo', value: 'A',
@@ -311,15 +321,14 @@ export default {
                 {
                     title: 'Inactivo', value: 'I',
                 },
-                {
-                    title: 'Eliminado', value: 'E',
-                },
             ],
             persona: {},
             idEliminar: null,
             datos: {},
             dialogOne: false,
             dialogTwo: false,
+            alertaEstado: false,
+            mensaje: '',
         }
     },
      methods: {
@@ -334,7 +343,15 @@ export default {
             });
         },
         obtenerPersonas(){
-            axios.get('http://127.0.0.1:8000/api/get-personas', this.header)
+
+            let headerPersona = {
+                params: {
+                    opcion: 1,
+                    estado: 'A',
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-personas', headerPersona)
             .catch(error => {
                 console.log(error)
             })
@@ -378,6 +395,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerPersonas()
                 this.persona = {}
             })
@@ -395,6 +414,8 @@ export default {
                 console.log(response);
                 this.obtenerPersonas()
                 this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
             })
         },
         eliminarPersona(){
@@ -404,6 +425,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerPersonas()
                 this.dialogTwo = false;
             })
