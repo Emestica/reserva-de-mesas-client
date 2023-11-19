@@ -24,13 +24,6 @@
                         ></v-text-field>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-col cols="12" md="6">
-                        <v-text-field
-                            v-model="tipomenu.icon"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
                 <v-divider class="mb-2"></v-divider>
                     <v-row>
                         <v-col cols="12" md="12">
@@ -52,7 +45,6 @@
                                     <th>#</th>
                                     <th>Tipo de men&uacute;</th>
                                     <th>Descripci&oacute;n</th>
-                                    <th>Icono</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -62,7 +54,6 @@
                                     <td>{{ item.id_tipo_menu }}</td>
                                     <td>{{ item.tipo_menu }}</td>
                                     <td>{{ item.descripcion }}</td>
-                                    <td>{{ item.icon }}</td>
                                     <td>
                                         <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
@@ -79,6 +70,11 @@
                 </v-row>
             </v-container>
         </v-card>
+
+        <!--Alerta-->
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
 
         <!--Editar-->
         <v-dialog
@@ -101,9 +97,6 @@
                         color="indigo"
                         placeholder="Ingrese una descripci&oacute;n"
                         required
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="datos.icon"
                     ></v-text-field>
                     <v-select
                         v-model="datos.estado"
@@ -164,12 +157,8 @@ export default {
             datos: {},
             dialogOne: false,
             dialogTwo: false,
-            header: {
-                params: {
-                    opcion: 2,
-                    idtipomenu: 1,
-                }
-            },
+            alertaEstado: false,
+            mensaje: '',
             estados: [
                 {
                     title: 'Activo', value: 'A',
@@ -177,15 +166,20 @@ export default {
                 {
                     title: 'Inactivo', value: 'I',
                 },
-                {
-                    title: 'Eliminado', value: 'E',
-                },
             ]
         }
     },
     methods: {
         obtenerTipoMenus(){
-            axios.get('http://127.0.0.1:8000/api/get-tipo-menu')
+
+            let headerTipoMenus = {
+                params: {
+                    opcion: 1,
+                    estado: 'A',
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-tipo-menu', headerTipoMenus)
             .catch(error => {
                 console.log(error);
             })
@@ -217,6 +211,7 @@ export default {
             }
         },
         agregarTipoMenu(){
+            this.tipomenu.icon = 'icon';
             this.tipomenu.usuario_creacion = 'root';
             axios.post('http://127.0.0.1:8000/api/save-tipo-menu', this.tipomenu)
             .catch(error => {
@@ -224,11 +219,14 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerTipoMenus()
                 this.tipomenu = {}
             })
         },
         editarTipoMenu(id){
+            this.datos.icon = 'icon'
             this.datos.usuario_modificacion = 'root';
             axios.put(`http://127.0.0.1:8000/api/update-tipo-menu/${id}`, this.datos)
             .catch(error => {
@@ -238,6 +236,8 @@ export default {
                 console.log(response);
                 this.obtenerTipoMenus()
                 this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
             })
         },
         eliminarTipoMenu(){
@@ -247,6 +247,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerTipoMenus()
                 this.dialogTwo = false;
             })

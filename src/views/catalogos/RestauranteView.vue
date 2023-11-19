@@ -152,6 +152,11 @@
             </v-container>
         </v-card>
 
+        <!--Alerta-->
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
+
         <!--Editar-->
         <v-dialog
             v-model="dialogOne"
@@ -264,21 +269,13 @@
 import axios from 'axios';
 export default {
     data() {
-        return {            
-            header:{
-                params:{
-                    opcion: 0
-                }
-            },
+        return {
             estados: [
                 {
                     title: 'Activo', value: 'A',
                 },
                 {
                     title: 'Inactivo', value: 'I',
-                },
-                {
-                    title: 'Eliminado', value: 'E',
                 },
             ],
             listaMunicipio: [],
@@ -288,6 +285,8 @@ export default {
             datos: {},
             dialogOne: false,
             dialogTwo: false,
+            alertaEstado: false,
+            mensaje: '',
         }
     },
     methods: {
@@ -301,7 +300,15 @@ export default {
             })
         },
         obtenerRestaurantes(){
-            axios.get('http://127.0.0.1:8000/api/get-restaurantes', this.header)
+
+            let headerRestaurantes = {
+                params: {
+                    opcion: 1,
+                    estado: 'A',
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-restaurantes', headerRestaurantes)
             .catch(error => {
                 console.log(error);
             })
@@ -340,6 +347,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerRestaurante()
                 this.restaurante = {}
             })
@@ -354,6 +363,8 @@ export default {
                 console.log(response);
                 this.obtenerRestaurantes()
                 this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
             })
         },
         eliminarRestaurante(){
@@ -363,6 +374,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerRestaurantes()
                 this.dialogTwo = false;
             })
