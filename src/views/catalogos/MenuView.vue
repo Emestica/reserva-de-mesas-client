@@ -230,6 +230,12 @@
                         density="compact"
                         label="Disponibilidad"
                     ></v-select>
+                    <v-select
+                        v-model="datos.estado"
+                        :items="estados"
+                        item-value="value"
+                        item-title="title"
+                    ></v-select>
                 </v-card-text>
                 <br>
                 <v-card-actions>
@@ -269,13 +275,6 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            header: {
-                params: {
-                    opcion: 1,
-                    estado: 'A',
-                    idrestaurante: 1,
-                }
-            },
             listadoDisponibilidad: [{
                 title: 'Disponible', value: true,
             }, {
@@ -287,9 +286,6 @@ export default {
                 },
                 {
                     title: 'Inactivo', value: 'I',
-                },
-                {
-                    title: 'Eliminado', value: 'E',
                 },
             ],
             listaMenu: [],
@@ -326,7 +322,16 @@ export default {
             })
         },
         obtenerMenus(){
-            axios.get('http://127.0.0.1:8000/api/get-menus', this.header)
+
+            let headerMenus = {
+                params: {
+                    opcion: 1,
+                    estado: 'A',
+                    idrestaurante: 1
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-menus', headerMenus)
             .catch(error => {
                 console.log(error);
             })
@@ -353,8 +358,8 @@ export default {
                     this.dialogOne = true;
                 });
             } else {
-            this.dialogTwo = true;
-            this.idEliminar = id;
+                this.dialogTwo = true;
+                this.idEliminar = id;
             }
         },
         obtenerTipoMenu(){

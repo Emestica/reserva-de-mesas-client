@@ -23,15 +23,6 @@
                             ></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-row>
-                        <v-col cols="12" md="6">
-                            <v-text-field
-                                v-model="clasifn.icon"
-                                label="Ingrese un icono"
-                                color="indigo"
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
                     <v-divider class="mb-2"></v-divider>
                     <v-row>
                         <v-col cols="12" md="12">
@@ -55,7 +46,6 @@
                                     <th>#</th>
                                     <th>Clasificaci&oacute;n</th>
                                     <th>Descripci&oacute;n</th>
-                                    <th>Icono</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
@@ -65,7 +55,6 @@
                                     <td>{{ item.id_clasificacion }}</td>
                                     <td>{{ item.clasificacion }}</td>
                                     <td>{{ item.descripcion }}</td>
-                                    <td>{{ item.icon }}</td>
                                     <td>
                                         <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
@@ -103,11 +92,6 @@
                     <v-text-field
                         v-model="datos.descripcion"
                         label="Descripci&oacute;n"
-                        color="indigo"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="datos.icon"
-                        label="Ingrese un icono"
                         color="indigo"
                     ></v-text-field>
                     <v-select
@@ -157,20 +141,12 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            header:{
-                params:{
-                    opcion: 0
-                }
-            },
             estados: [
                 {
                     title: 'Activo', value: 'A',
                 },
                 {
                     title: 'Inactivo', value: 'I',
-                },
-                {
-                    title: 'Eliminado', value: 'E',
                 },
             ],
             listaClasif:[],
@@ -185,7 +161,13 @@ export default {
     },
     methods: {
         obtenerClasificaciones(){
-            axios.get('http://127.0.0.1:8000/api/get-clasificaciones')
+            let header = {
+                params:{
+                    opcion: 1,
+                    estado: 'A'
+                }
+            };
+            axios.get('http://127.0.0.1:8000/api/get-clasificaciones', header)
             .catch(error => {
                 console.log(error);
             })

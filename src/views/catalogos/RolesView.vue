@@ -159,20 +159,12 @@ import axios from 'axios';
 export default {
     data(){
         return {
-            header:{
-                params:{
-                    opcion: 0
-                }
-            },
             estados: [
                 {
                     title: 'Activo', value: 'A',
                 },
                 {
                     title: 'Inactivo', value: 'I',
-                },
-                {
-                    title: 'Eliminado', value: 'E',
                 },
             ],
             roles: {},
@@ -187,7 +179,15 @@ export default {
     },
     methods: {
         obtenerRoles(){
-            axios.get('http://127.0.0.1:8000/api/get-roles')
+
+            let headerRoles = {
+                params: {
+                    opcion: 1,
+                    estado: 'A'
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-roles', headerRoles)
             .catch(error => {
                 console.log(error)
             })
