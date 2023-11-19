@@ -56,7 +56,7 @@
                                 <tr v-for="item in listaMunicipios" :key="item.id_municipio">
                                     <td>{{ item.id_municipio }}</td>
                                     <td>{{ item.municipio }}</td>
-                                    <td>{{ item.departamentos }}</td>
+                                    <td>{{ item.departamento }}</td>
                                     <td>
                                         <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
@@ -97,11 +97,17 @@ export default {
             })
         },
         obtenerMunicipios() {
-            axios.get('http://127.0.0.1:8000/api/get-municipios')
+            let headerMuncipios = {
+                params: {
+                    opcion: 3
+                }
+            };
+            axios.get('http://127.0.0.1:8000/api/get-municipios', headerMuncipios)
             .catch(error => {
                 console.log(error);
             })
             .then(response => {
+                console.log(response.data.data);
                 this.listaMunicipios = response.data.data;
             })
         },

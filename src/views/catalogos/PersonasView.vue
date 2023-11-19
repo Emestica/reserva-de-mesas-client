@@ -97,7 +97,11 @@
 
                     <v-row>
                         <v-col cols="12" md="6">
-                            <v-text-field label="Fecha de Nacimiento"></v-text-field>
+                            <v-text-field 
+                                label="Fecha de Nacimiento"
+                                type="date"
+                                v-model="persona.fecha_nacimiento">
+                            </v-text-field>
                         </v-col>
 
                         <v-col cols="6" md="3">
@@ -113,7 +117,7 @@
                     <v-row>
                         <v-col cols="12" md="12">
                             <div class="text-end">
-                                <v-btn type="button" class="mt-2 green" color="green-darken-3">Guardar</v-btn>
+                                <v-btn type="button" class="mt-2 green" color="green-darken-3" v-on:click="agregarPersona()">Guardar</v-btn>
                             </div>
                         </v-col>
                     </v-row>
@@ -236,6 +240,11 @@
                         clearable
                         required
                     ></v-select>
+                    <v-text-field 
+                        label="Fecha de Nacimiento"
+                        type="date"
+                        v-model="datos.fecha_nacimiento">
+                    </v-text-field>
                     <v-text-field
                         v-model="datos.edad"
                         label="Edad"
@@ -283,6 +292,8 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
+
 export default {
     data(){
         return {
@@ -355,7 +366,12 @@ export default {
             }
         },
         agregarPersona(){
+
             this.persona.usuario_creacion = 'root';
+            this.persona.fecha_nacimiento = moment(this.persona.fecha_nacimiento).format('YYYY-MM-DD');
+            console.log(this.persona);
+
+
             axios.post('http://127.0.0.1:8000/api/save-persona', this.persona)
             .catch(error => {
                 console.log(error);
@@ -367,7 +383,10 @@ export default {
             })
         },
         editarPersona(id){
-            this.datos.usuario_creacion = 'root';
+            this.datos.usuario_modificacion = 'root';
+            this.datos.fecha_nacimiento = moment(this.persona.fecha_nacimiento).format('YYYY-MM-DD');
+            console.log(this.datos);
+
             axios.put(`http://127.0.0.1:8000/api/update-persona/${id}`, this.datos)
             .catch(error => {
                 console.log(error);
