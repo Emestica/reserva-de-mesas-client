@@ -157,6 +157,11 @@
             </v-container>
         </v-card>
 
+        <!--Alerta-->
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
+
         <!--Editar-->
         <v-dialog
             v-model="dialogOne"
@@ -226,9 +231,36 @@
                         label="Disponibilidad"
                     ></v-select>
                 </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogOne = false">Cancelar</v-btn>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn color="purple-darken-3" @click="editarMenu(datos.id_menu)">Actualizar</v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
 
+        <!--Eliminar-->
+        <v-dialog
+            v-model="dialogTwo"
+            transition="dialog-top-transition"
+            width="400"
+        >
+            <v-card title="Eliminar">  
+                <br>
+                <v-card-text>
+                    Est&aacute; seguro de eliminar este registro?
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogTwo = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red-accent-4" @click="eliminarMenu">Eliminar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -245,9 +277,9 @@ export default {
                 }
             },
             listadoDisponibilidad: [{
-                title: 'Activo', value: true,
+                title: 'Disponible', value: true,
             }, {
-                title: 'Inactivo', value: false,
+                title: 'No disponible', value: false,
             }],
             estados: [
                 {
@@ -345,6 +377,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerMenus()
                 this.menu = {}
             })
@@ -359,6 +393,8 @@ export default {
                 console.log(response);
                 this.obtenerMenus()
                 this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
             })
         },
         eliminarMenu(){
@@ -368,6 +404,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerMenus()
                 this.dialogTwo = false;
             })
