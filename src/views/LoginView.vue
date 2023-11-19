@@ -15,7 +15,8 @@
                 prepend-inner-icon="mdi-email-outline" 
                 variant="outlined"
                 type="email"
-            ></v-text-field>
+                v-model="user.email">
+            </v-text-field>
   
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                 Contrase&ntilde;a:
@@ -33,7 +34,8 @@
                 prepend-inner-icon="mdi-lock-outline" 
                 variant="outlined" 
                 @click:append-inner="visible = !visible"
-            ></v-text-field>
+                v-model="user.password">
+            </v-text-field>
   
             <v-card class="mb-12" color="surface-variant" variant="tonal">
                 <v-card-text class="text-medium-emphasis text-caption">
@@ -50,7 +52,8 @@
                 color="blue" 
                 size="large" 
                 variant="tonal"
-            >Iniciar sesión</v-btn>
+                v-on:click="loginUserClient()">Iniciar sesión
+            </v-btn>
   
             <v-card-text class="text-center">
                 <router-link class="text-blue text-decoration-none" to="/register" rel="noopener noreferrer" target="_blank">
@@ -62,9 +65,51 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data: () => ({
         visible: false,
+        user:{
+            email: null,
+            password: null
+        }
     }),
+    methods: {
+        loginUserClient(){
+            console.log('loginUserClient() => init');
+            console.log(this.user);
+
+            axios.post('http://127.0.0.1:8000/api/client/login-user', this.user)
+            .then(response => {
+                if(response.data.success === true){
+                    let security = {
+                        user_id:                        response.data.data_user_object.id_usuario,
+                        user_name:                      response.data.data_user_object.usuario,
+                        user_email:                     response.data.data_user_object.correo_electronico,
+                        user_channel:                   response.data.data_user_object.channel,
+                        person_user_id:                 response.data.data_user_person_object.id_usuario_persona,
+                        person_id:                      response.data.data_user_person_object.id_persona,
+                        person_name:                    response.data.data_user_person_object.nombres,
+                        person_last_name:               response.data.data_user_person_object.apellidos,
+                        person_movil:                   response.data.data_user_person_object.celular,
+                        restaurant_id:                  response.data.data_user_restaurant_object.id_restaurante,
+                        restaurant_user_id:             response.data.data_user_restaurant_object.id_usuario_restaurante,
+                        restaurant_legal_name:          response.data.data_user_restaurant_object.nombre_legal,
+                        restaurant_name:                response.data.data_user_restaurant_object.restaurante,
+                        restaurant_telephone_number:    response.data.data_user_restaurant_object.telefono
+                    };
+
+                    this.$store.dispatch('login', security);
+                    this.$router.push('/home');
+                }else{
+                    console.log('loginUserClient() => error-controlado');
+                }
+            }).catch(error => {
+                console.log('loginUserClient() => error-no-controlado')
+                console.log(error);
+            });
+        }
+    }
 }
 </script>
