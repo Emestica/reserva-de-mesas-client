@@ -80,12 +80,12 @@
 
   <v-navigation-drawer v-model="drawer" location="left" theme="dark" permanent width="360">
 
-    <v-list-item prepend-icon="mdi mdi-account-circle" title="Jhony Gente Loca"
-      subtitle="jhony.gente.loca@gmail.com"></v-list-item>
+    <v-list-item prepend-icon="mdi mdi-account-circle" :title="nombre_completo"
+      :subtitle="correo"></v-list-item>
 
     <v-divider></v-divider>
     <v-list v-model:opened="open">
-      <v-list-item prepend-icon="mdi-home" link title="Inicio" to="/"></v-list-item>
+      <v-list-item prepend-icon="mdi-home" link title="Inicio" to="/home"></v-list-item>
 
       <v-list-group value="Users">
         <template v-slot:activator="{ props }">
@@ -112,7 +112,7 @@
       </v-list-group>
     </v-list>
     <template v-slot:append>
-      <v-btn prepend-icon="mdi mdi-logout" block class="mb-5">
+      <v-btn prepend-icon="mdi mdi-logout" block class="mb-5" v-on:click="logout">
         Cerrar Sesi&oacute;n
       </v-btn>
     </template>
