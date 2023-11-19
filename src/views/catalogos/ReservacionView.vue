@@ -18,7 +18,6 @@
                                     <th>Estatus</th>
                                     <th>Valoraci&oacute;n</th>
                                     <th>Estado</th>
-                                    <th>Opciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -30,16 +29,16 @@
                                    <td>{{ item.hora_inicio }}</td> 
                                    <td>{{ item.hora_fin }}</td> 
                                    <td>{{ item.notas }}</td> 
-                                   <td>{{ item.estatus_reservacion }}</td> 
+                                   <td>
+                                        <div v-if="item.estatus_reservacion === 'R'">Reservado</div>
+                                        <div v-if="item.estatus_reservacion === 'C'">Cancelado</div>
+                                        <div v-if="item.estatus_reservacion === 'O'">Completado</div>
+                                   </td> 
                                    <td>{{ item.valoracion }}</td> 
                                    <td>
-                                    <div v-if="item.estado === 'A'">Activo</div>
+                                        <div v-if="item.estado === 'A'">Activo</div>
                                         <div v-if="item.estado === 'I'">Inactivo</div>
                                         <div v-if="item.estado === 'E'">Eliminado</div>
-                                   </td> 
-                                    <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -56,6 +55,17 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            estatus: [
+                {
+                    title: 'Cancelado', value: 'C',
+                },
+                {
+                    title: 'Reservado', value: 'R',
+                },
+                {
+                    title: 'Completado', value: 'O',
+                }
+            ],
             listaReservacion: [],
             listaMesas: [],
         }

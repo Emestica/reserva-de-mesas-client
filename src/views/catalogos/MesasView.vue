@@ -129,6 +129,11 @@
             </v-container>
         </v-card>
 
+        <!--Alerta-->
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
+
         <!--Editar-->
         <v-dialog
             v-model="dialogOne"
@@ -248,22 +253,14 @@ export default {
                 {
                     title: 'Inactivo', value: 'I',
                 },
-                {
-                    title: 'Eliminado', value: 'E',
-                },
             ],
-            header: {
-                params:{
-                    opcion: 1,
-                    estado: 'A',
-                    idrestaurante: 1,
-                }
-            },
             mesas: {},
             idEliminar: null,
             dialogOne: false,
             dialogTwo: false,
-            datos: {}
+            datos: {},
+            alertaEstado: false,
+            mensaje: '', 
         }
     },
     methods: {
@@ -277,7 +274,16 @@ export default {
             })
         },
         obtenerMesas(){
-            axios.get('http://127.0.0.1:8000/api/get-mesas', this.header)
+
+            let headerMesas = {
+                params: {
+                    opcion: 1,
+                    estado: 'A',
+                    idrestaurante: 1 
+                }
+            }
+
+            axios.get('http://127.0.0.1:8000/api/get-mesas', headerMesas)
             .catch(error => {
                 console.log(error);
             })
@@ -315,6 +321,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerMesas()
                 this.mesas = {}
             })
@@ -329,6 +337,8 @@ export default {
                 console.log(response);
                 this.obtenerMesas()
                 this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
             })
         },
         eliminarMesa(){
@@ -338,6 +348,8 @@ export default {
             })
             .then(response => {
                 console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
                 this.obtenerMesas()
                 this.dialogTwo = false;
             })

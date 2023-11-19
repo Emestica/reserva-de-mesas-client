@@ -80,8 +80,8 @@
 
   <v-navigation-drawer v-model="drawer" location="left" theme="dark" permanent width="360">
 
-    <v-list-item prepend-icon="mdi mdi-account-circle" :title="nombre_completo"
-      :subtitle="correo"></v-list-item>
+    <v-list-item prepend-icon="mdi mdi-account-circle" title="Jhony Gente Loca"
+      subtitle="jhony.gente.loca@gmail.com"></v-list-item>
 
     <v-divider></v-divider>
     <v-list v-model:opened="open">
@@ -111,31 +111,8 @@
         </v-list-group>
       </v-list-group>
     </v-list>
-
-    <!--<v-list v-model:opened="open">
-
-  <v-list-item link title="Inicio" to="/"></v-list-item>
-
-  <v-list-item link title="Roles" to="/roles"></v-list-item>
-
-  <v-list-group value="Catalogos">
-
-    <template v-slot:activator>
-      <v-list-item prepend-icon="mdi-account-circle" title="Catalogos"></v-list-item>
-    </template>
-
-    <v-list-item
-      title="Perfiles"
-      prepend-icon="icon-md"
-      to="/roles"
-      link
-    ></v-list-item>
-
-  </v-list-group>
-</v-list>-->
-
     <template v-slot:append>
-      <v-btn prepend-icon="mdi mdi-logout" block class="mb-5" v-on:click="logout()">
+      <v-btn prepend-icon="mdi mdi-logout" block class="mb-5">
         Cerrar Sesi&oacute;n
       </v-btn>
     </template>
@@ -143,9 +120,6 @@
 
   <v-app-bar color="blue">
     <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    <!-- <template v-slot:append>
-  <v-btn icon="mdi-dots-vertical"></v-btn>
-</template> -->
   </v-app-bar>
 </template>
 
