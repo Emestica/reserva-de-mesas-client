@@ -146,8 +146,8 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>                                        
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>                                    
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerMenu(item.id_menu, 1)"></v-btn>                                 
+                                        <v-btn icon="mdi-delete" color="red" @click="obtenerMenu(item.id_menu, 2)"></v-btn>                                    
                                     </td>                                    
                                 </tr>
                             </tbody>
@@ -166,7 +166,64 @@
             <v-card title="Editar" subtitle="Datos del men&uacute;">
                 <v-card-text>
                     <v-select
-                        
+                        v-model="datos.id_restaurante"
+                        :items="listaRestaurante"
+                        item-value="id_restaurante"
+                        item-title="restaurante"
+                        color="indigo"
+                        label="Seleccione un Restaurante"
+                        clearable
+                    ></v-select>
+                    <v-select
+                        v-model="datos.id_clasificacion"
+                        :items="listaClasif"
+                        item-value="id_clasificacion"
+                        item-title="clasificacion"
+                        density="compact"
+                        color="indigo"
+                        label="Seleccione una Clasificaci&oacute;n"
+                        clearable
+                    ></v-select>
+                    <v-select
+                        v-model="datos.id_tipo_menu"
+                        :items="listaTipoMenu"
+                        item-value="id_tipo_menu"
+                        item-title="tipo_menu"
+                        density="compact"
+                        color="indigo"
+                        label="Seleccione un Tipo de Menú"
+                        clearable
+                    ></v-select>
+                    <v-text-field
+                        v-model="datos.nombre"
+                        label="Nombre"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.informacion"
+                        label="Informaci&oacute;n"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.precio"
+                        label="Precio"
+                        color="indigo"
+                        placeholder="Ingrese un precio"
+                        type="number"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.descuento"
+                        label="Descuento"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-select
+                        v-model="datos.disponible"
+                        :items="listadoDisponibilidad"
+                        item-value="value"
+                        item-title="title"
+                        color="indigo"
+                        density="compact"
+                        label="Disponibilidad"
                     ></v-select>
                 </v-card-text>
             </v-card>
