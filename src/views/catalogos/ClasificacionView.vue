@@ -72,8 +72,8 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerClasificacion(item.id_clasificacion, 1)"></v-btn>
+                                        <v-btn icon="mdi-delete" color="red" @click="obtenerClasificacion(item.id_clasificacion, 2)"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -82,6 +82,73 @@
                 </v-row>
             </v-container>
         </v-card>
+
+        <v-snackbar v-model="alertaEstado" color="blue-accent-1" timeout="3000">
+            {{ mensaje }}
+        </v-snackbar>
+
+        <!--Editar-->
+        <v-dialog
+            v-model="dialogOne"
+            transition="dialog-top-transition"
+            width="600"
+        >
+            <v-card title="Editar" subtitle="Datos de la clasificaci&oacute;n">
+                <v-card-text>
+                    <v-text-field
+                        v-model="datos.clasificacion"
+                        label="Clasificaci&oacute;n"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.descripcion"
+                        label="Descripci&oacute;n"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.icon"
+                        label="Ingrese un icono"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-select
+                        v-model="datos.estado"
+                        :items="estados"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        label="Estado"
+                        color="indigo"
+                        clearable
+                    ></v-select>
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogOne = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="purple-darken-3" @click="editarClasificacion(datos.id_clasificacion)">Actualizar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!--Eliminar-->
+        <v-dialog
+            v-model="dialogTwo"
+            transition="dialog-top-transition"
+            width="400"
+        >
+            <v-card title="Eliminar">  
+                <br>
+                <v-card-text>
+                    Est&aacute; seguro de eliminar este registro?
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogTwo = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red-accent-4" @click="eliminarClasificacion">Eliminar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -90,13 +157,34 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            validar: false,
+            header:{
+                params:{
+                    opcion: 0
+                }
+            },
+            estados: [
+                {
+                    title: 'Activo', value: 'A',
+                },
+                {
+                    title: 'Inactivo', value: 'I',
+                },
+                {
+                    title: 'Eliminado', value: 'E',
+                },
+            ],
             listaClasif:[],
             clasifn: {},
+            idEliminar: null,
+            dialogOne: false,
+            dialogTwo: false,
+            datos: {},
+            alertaEstado: false,
+            mensaje: '',
         }
     },
     methods: {
-        obtenerClasif(){
+        obtenerClasificaciones(){
             axios.get('http://127.0.0.1:8000/api/get-clasificaciones')
             .catch(error => {
                 console.log(error);
@@ -104,6 +192,28 @@ export default {
             .then(response => {
                 this.listaClasif = response.data.data;
             });
+        },
+        obtenerClasificacion(id, action){
+            if (action == 1) {
+                let headerById = {
+                    params: {
+                        opcion: 2,
+                        idclasificacion: id
+                    }
+                }
+
+                axios.get('http://127.0.0.1:8000/api/get-clasificaciones', headerById)
+                .catch(error => {
+                    console.log(error);
+                })
+                .then(response => {
+                    this.datos = response.data.data;
+                    this.dialogOne = true;
+                });
+            } else {
+                this.dialogTwo = true;
+                this.idEliminar = id;
+            }
         },
         agregarClasif(){
             this.clasifn.usuario_creacion = 'root';
@@ -113,13 +223,42 @@ export default {
             })
             .then(response => {
                 console.log(response);
-                this.obtenerClasif()
+                this.alertaEstado = true
+                this.mensaje = response.data.data
+                this.obtenerClasificaciones()
                 this.clasifn = {}
+            })
+        },
+        editarClasificacion(id){
+            this.datos.usuario_modificacion = 'root';
+            axios.put(`http://127.0.0.1:8000/api/update-clasificacion/${id}`, this.datos)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerClasificaciones()
+                this.dialogOne = false
+                this.alertaEstado = true
+                this.mensaje = response.data.data
+            })
+        },
+        eliminarClasificacion(){
+            axios.put(`http://127.0.0.1:8000/api/delete-clasificacion/${this.idEliminar}`)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.alertaEstado = true
+                this.mensaje = response.data.data
+                this.obtenerClasificaciones()
+                this.dialogTwo = false;
             })
         }
     },
     created() {
-        this.obtenerClasif();
+        this.obtenerClasificaciones();
     },
 }
 </script>

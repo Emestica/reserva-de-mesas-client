@@ -10,7 +10,7 @@
                                 v-model="restaurante.id_municipio"
                                 :items="listaMunicipio"
                                 item-value="id_municipio"
-                                item-title="departamento"
+                                item-title="municipio"
                                 density="compact"
                                 color="indigo"
                                 label="Seleccione un Municipio"
@@ -141,8 +141,8 @@
                                         <div v-if="item.estado === 'E'">Eliminado</div>
                                     </td>
                                     <td>
-                                        <v-btn icon="mdi-pencil" color="green"></v-btn>
-                                        <v-btn icon="mdi-delete" color="red"></v-btn>
+                                        <v-btn icon="mdi-pencil" color="green" @click="obtenerRestaurante(item.id_restaurante, 1)"></v-btn>
+                                        <v-btn icon="mdi-delete" color="red" @click="obtenerRestaurante(item.id_restaurante, 2)"></v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -151,6 +151,112 @@
                 </v-row>
             </v-container>
         </v-card>
+
+        <!--Editar-->
+        <v-dialog
+            v-model="dialogOne"
+            transition="dialog-top-transition"
+            width="600"
+        >
+            <v-card title="Editar" subtitle="Datos del Restaurante">
+                <v-card-text>
+                    <v-select
+                        v-model="datos.id_municipio"
+                        :items="listaMunicipio"
+                        item-value="id_municipio"
+                        item-title="municipio"
+                        density="compact"
+                        color="indigo"
+                        label="Seleccione un Municipio"
+                        clearable
+                    ></v-select>
+                    <v-text-field
+                        v-model="datos.nombre_legal"
+                        label="Nombre Legal"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.restaurante"
+                        label="Restaurante"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.descripcion"
+                        label="Descripci&oacute;n"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.direccion"
+                        label="Direcci&oacute;n"
+                        placeholder="Ingrese una direcci&oacute;n"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.telefono"
+                        label="Tel&eacute;fono Fijo"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.celular"
+                        label="Tel&eacute;fono Celular"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.correo"
+                        label="Correo Electr&oacute;nico"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="datos.pagina_web"
+                        label="P&aacute;gina Web"
+                        placeholder="Ingrese una p&aacute;gina web"
+                        color="indigo"
+                    ></v-text-field>
+                    <v-select
+                        v-model="datos.estado"
+                        :items="estados"
+                        item-title="title"
+                        item-value="value"                    
+                        density="compact"
+                        label="Disponibilidad"
+                        color="indigo"
+                        clearable
+                    ></v-select>
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn
+                        color="amber-accent-4"
+                        @click="dialogOne = false"
+                    >Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="purple-darken-3"
+                        @click="editarRestaurante(datos.id_restaurante)"
+                    >Actualizar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!--Eliminar-->
+        <v-dialog
+            v-model="dialogTwo"
+            transition="dialog-top-transition"
+            width="400"
+        >
+            <v-card title="Eliminar">  
+                <br>
+                <v-card-text>
+                    Est&aacute; seguro de eliminar este registro?
+                </v-card-text>
+                <br>
+                <v-card-actions>
+                    <v-btn color="amber-accent-4" @click="dialogTwo = false">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red-accent-4" @click="eliminarRestaurante">Eliminar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -161,12 +267,27 @@ export default {
         return {            
             header:{
                 params:{
-                    opcion: 4
+                    opcion: 0
                 }
             },
+            estados: [
+                {
+                    title: 'Activo', value: 'A',
+                },
+                {
+                    title: 'Inactivo', value: 'I',
+                },
+                {
+                    title: 'Eliminado', value: 'E',
+                },
+            ],
             listaMunicipio: [],
             listaRestaurante: [],
             restaurante: {},
+            idEliminar: null,
+            datos: {},
+            dialogOne: false,
+            dialogTwo: false,
         }
     },
     methods: {
@@ -179,7 +300,7 @@ export default {
                 this.listaMunicipio = response.data.data;
             })
         },
-        obtenerRestaurante(){
+        obtenerRestaurantes(){
             axios.get('http://127.0.0.1:8000/api/get-restaurantes', this.header)
             .catch(error => {
                 console.log(error);
@@ -188,6 +309,28 @@ export default {
                 this.listaRestaurante = response.data.data;
 
             })
+        },
+        obtenerRestaurante(id, action){
+            if (action == 1) {
+                let headerById = {
+                    params: {
+                        opcion: 2,
+                        idrestaurante: id
+                    }
+                }
+
+                axios.get('http://127.0.0.1:8000/api/get-restaurantes', headerById)
+                .catch(error => {
+                    console.log(error);
+                })
+                .then(response => {
+                    this.datos = response.data.data;
+                    this.dialogOne = true;
+                });
+            } else {
+                this.dialogTwo = true;
+                this.idEliminar = id;
+            }
         },
         agregarRestaurante(){
             this.restaurante.usuario_creacion = 'root';
@@ -200,11 +343,34 @@ export default {
                 this.obtenerRestaurante()
                 this.restaurante = {}
             })
+        },
+        editarRestaurante(id){
+            this.datos.usuario_creacion = 'root';
+            axios.put(`http://127.0.0.1:8000/api/update-restaurante/${id}`, this.datos)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerRestaurantes()
+                this.dialogOne = false
+            })
+        },
+        eliminarRestaurante(){
+            axios.put(`http://127.0.0.1:8000/api/delete-restaurante/${this.idEliminar}`)
+            .catch(error => {
+                console.log(error);
+            })
+            .then(response => {
+                console.log(response);
+                this.obtenerRestaurantes()
+                this.dialogTwo = false;
+            })
         }
     },
     created() {
         this.obtenerMunicipio();
-        this.obtenerRestaurante();
+        this.obtenerRestaurantes();
     },
 }
 </script>
