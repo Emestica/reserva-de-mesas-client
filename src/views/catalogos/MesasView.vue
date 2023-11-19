@@ -1,4 +1,5 @@
 <template>
+    <NavigationDrawerComponent></NavigationDrawerComponent>
     <v-container>
         <h1>Formulario de Mesas</h1>
         <v-card>
@@ -233,7 +234,13 @@
 
 <script>
 import axios from 'axios';
+
+import NavigationDrawerComponent from '@/components/NavigationDrawerComponent.vue';
+
 export default {
+    components: {
+        NavigationDrawerComponent
+    },
     data() {
         return {
             listaRestaurante: [],

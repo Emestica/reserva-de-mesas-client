@@ -1,4 +1,5 @@
 <template>
+    <NavigationDrawerComponent></NavigationDrawerComponent>
     <v-container>
         <h1>Formulario de Clientes</h1>
         <v-card>
@@ -309,7 +310,12 @@
 import axios from 'axios';
 import moment from 'moment';
 
+import NavigationDrawerComponent from '@/components/NavigationDrawerComponent.vue';
+
 export default {
+    components: {
+        NavigationDrawerComponent
+    },
     data(){
         return {
             listaPersona: [],

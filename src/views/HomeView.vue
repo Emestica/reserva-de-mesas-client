@@ -75,7 +75,7 @@
     </v-row>
   </v-container>
 
-  <NavigationDrawerComponent :nombre_completo="nombre_completo" :correo="correo"></NavigationDrawerComponent>
+  <NavigationDrawerComponent></NavigationDrawerComponent>
 
 </template>
 

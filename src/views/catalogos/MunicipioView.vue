@@ -1,4 +1,5 @@
 <template>
+    <NavigationDrawerComponent></NavigationDrawerComponent>
     <v-container>
         <h1>Formulario de Municipios</h1>
         <br>
@@ -129,7 +130,13 @@
 
 <script>
 import axios from 'axios';
+
+import NavigationDrawerComponent from '@/components/NavigationDrawerComponent.vue';
+
 export default {
+    components: {
+        NavigationDrawerComponent
+    },
     data() {
         return {
             estados: [
