@@ -75,58 +75,19 @@
     </v-row>
   </v-container>
 
+  <NavigationDrawerComponent :nombre_completo="nombre_completo" :correo="correo"></NavigationDrawerComponent>
 
-
-
-  <v-navigation-drawer v-model="drawer" location="left" theme="dark" permanent width="360">
-
-    <v-list-item prepend-icon="mdi mdi-account-circle" :title="nombre_completo"
-      :subtitle="correo"></v-list-item>
-
-    <v-divider></v-divider>
-    <v-list v-model:opened="open">
-      <v-list-item prepend-icon="mdi-home" link title="Inicio" to="/home"></v-list-item>
-
-      <v-list-group value="Users">
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-account-circle" title="Catalogos"></v-list-item>
-        </template>
-
-        <v-list-group value="Admin">
-          <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" title="Admin"></v-list-item>
-          </template>
-
-          <v-list-item v-for="([title, icon, ulr], i) in admins" :key="i" :title="title" :prepend-icon="icon"
-            :value="title" :to="ulr"></v-list-item>
-        </v-list-group>
-
-        <v-list-group value="Actions">
-          <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" title="Actions"></v-list-item>
-          </template>
-
-          <v-list-item v-for="([title, icon], i) in cruds" :key="i" :value="title" :title="title"
-            :prepend-icon="icon"></v-list-item>
-        </v-list-group>
-      </v-list-group>
-    </v-list>
-    <template v-slot:append>
-      <v-btn prepend-icon="mdi mdi-logout" block class="mb-5" v-on:click="logout">
-        Cerrar Sesi&oacute;n
-      </v-btn>
-    </template>
-  </v-navigation-drawer>
-
-  <v-app-bar color="blue">
-    <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-  </v-app-bar>
 </template>
 
 <script>
 
+import NavigationDrawerComponent from '@/components/NavigationDrawerComponent.vue';
+
 export default {
   name: 'HomeView',
+  components:{
+    NavigationDrawerComponent
+  },
   data: () => ({
     open: ['Users'],
     admins: [
